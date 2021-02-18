@@ -281,6 +281,7 @@ suite('transformTTY', () => {
 		const frames = transformTTY.getFrames();
 		const frames2 = transformTTY2.getFrames();
 		const frames3 = transformTTY3.getFrames();
+
 		assert.deepEqual(toString, 'foo\nboz\nbaz');
 		assert.deepEqual(writes, [
 			'foo',
@@ -306,8 +307,6 @@ suite('transformTTY', () => {
 			'foo\nboz\nbaz',
 		]);
 		assert.equal(toString, frames[frames.length - 1]);
-		assert.equal(toString, frames[frames.length - 1]);
-		assert.deepEqual(writes, sequences[sequences.length - 1]);
 		assert.deepEqual(writes, sequences[sequences.length - 1]);
 		assert.equal(toString2, toString3);
 		assert.deepEqual(frames2, frames3);
@@ -502,8 +501,8 @@ suite('transformTTY', () => {
 		const frames = transformTTY.getFrames();
 		const frames2 = transformTTY2.getFrames();
 		const frames3 = transformTTY3.getFrames();
-		assert.deepEqual(toString, 'foo\nbar\nbaz\n   boz');
 
+		assert.deepEqual(toString, 'foo\nbar\nbaz\n   boz');
 		assert.deepEqual(writes, ['foo\nbar\nbaz', '\x1B[B', 'boz']);
 		assert.deepEqual(sequences, [
 			['foo\nbar\nbaz'],
@@ -608,6 +607,7 @@ suite('transformTTY', () => {
 		const frames = transformTTY.getFrames();
 		const frames2 = transformTTY2.getFrames();
 		const frames3 = transformTTY3.getFrames();
+
 		assert.deepEqual(toString, 'foo\nbar\nbaz\n\n   boz');
 		assert.deepEqual(writes, ['foo\nbar\nbaz', '\x1B[2B', 'boz']);
 		assert.deepEqual(sequences, [
@@ -734,12 +734,10 @@ suite('transformTTY', () => {
 		transformTTYWrite(moreCodes.overwriteCharacters(5));
 
 		const toString = transformTTY.toString();
-
 		const toString3 = transformTTY3.toString();
 		const writes = transformTTY.getWrites();
 		const sequences = transformTTY.getSequences();
 		const frames = transformTTY.getFrames();
-
 		const frames3 = transformTTY3.getFrames();
 
 		assert.deepEqual(toString, 'foo  bar          ');
