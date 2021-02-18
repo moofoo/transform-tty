@@ -124,7 +124,7 @@ is just a repeated series of text output and control codes that manage cursor be
 
 We can approximate frames by breaking up these outputs into sequences by some logic and then running the sequences individually through a terminal emulator to create strings.
 
-With no arguments for `add` or `clear`, addSequencer creates sequences on text output (that is, when output isn't exclusively control codes). It does NOT clear
+Calling addSequencer with no arguments creates sequences on text output (that is, when output isn't exclusively control codes). It does NOT clear
 between sequences (the default of `clear` is `false`), so sequences are additive by default.
 
 
