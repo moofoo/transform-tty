@@ -50,6 +50,16 @@ these codes (see [these tests](https://github.com/moofoo/transform-tty/blob/main
 
 One exception is that AnsiTerminal does not support Tab stop related codes.
 
+### getCursorPos
+
+returns the current cursor position
+
+```js
+const transformTTY = new TransformTTY();
+transformTTY.moveCursor(3, 0);
+transformTTY.getCursorPos(); // { x:3, y:0 }
+```
+
 ### addSequencer(add, clear)
 
 A 'sequencer' breaks up writes to the stream into sequences based on the `add` and `clear` functions.
@@ -62,9 +72,9 @@ Both `add` and `clear` have useful defaults that will very likely meet your need
 const transformTTY = new TransformTTY();
 
 transformTTY.write('foo');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('bar');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('baz');
 
 transformTTY.toString(); // 'foo   bar   baz'
@@ -76,9 +86,9 @@ transformTTY.toString(); // 'foo   bar   baz'
 const transformTTY = new TransformTTY();
 
 transformTTY.write('foo');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('bar');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('baz');
 
 transformTTY.getWrites(); // [ 'foo', '\x1B[3C', 'bar', '\x1B[3C', 'baz' ]
@@ -91,9 +101,9 @@ const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
 
 transformTTY.write('foo');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('bar');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('baz');
 
 transformTTY.getSequences();
@@ -113,9 +123,9 @@ const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
 
 transformTTY.write('foo');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('bar');
-transformTTY.moveCursor(0, 3);
+transformTTY.moveCursor(3, 0);
 transformTTY.write('baz');
 
 transformTTY.getFrames(); // [ 'foo', 'foo   bar', 'foo   bar   baz' ]

@@ -17,6 +17,8 @@ declare interface TransformTTYOptions {
 declare class TransformTTY extends TTY.WriteStream {
 	constructor(options?: TransformTTYOptions);
 
+	getCursorPos(): { x: number; y: number };
+
 	addSequencer(
 		add?: (string: string, sequencer: Sequencer) => boolean,
 		clear?: (string: string, sequencer: Sequencer) => boolean
@@ -27,6 +29,8 @@ declare class TransformTTY extends TTY.WriteStream {
 	getSequences(): string[][];
 
 	getWrites(): string[];
+
+	getSequenceStrings(): string[];
 
 	toString(): string;
 

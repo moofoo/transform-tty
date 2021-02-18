@@ -60,7 +60,7 @@ class NodeAnsiTerminal {
 	}
 
 	cursorGetPosition() {
-		return [this.terminal.cursor.col, this.terminal.cursor.row];
+		return { x: this.terminal.cursor.col, y: this.terminal.cursor.row };
 	}
 
 	new() {

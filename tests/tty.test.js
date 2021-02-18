@@ -103,6 +103,28 @@ suite('transformTTY', () => {
 		assert(testTTY._defaultParser === TerminalJSParser);
 	});
 
+	test('getCursorPos', () => {
+		const testTTY = new TransformTTY();
+
+		assert.deepEqual(testTTY.getCursorPos(), { x: 0, y: 0 });
+
+		testTTY.write('foo');
+
+		assert.deepEqual(testTTY.getCursorPos(), { x: 3, y: 0 });
+
+		testTTY.cursorTo(10);
+
+		assert.deepEqual(testTTY.getCursorPos(), { x: 10, y: 0 });
+
+		testTTY.write('foo\nbar');
+
+		assert.deepEqual(testTTY.getCursorPos(), { x: 16, y: 1 });
+
+		testTTY.moveCursor(-3, -1);
+
+		assert.deepEqual(testTTY.getCursorPos(), { x: 13, y: 0 });
+	});
+
 	test('getString', () => {
 		transformTTYWrite('foo');
 
@@ -134,7 +156,7 @@ suite('transformTTY', () => {
 		const toString2 = transformTTY2.toString();
 		const toString3 = transformTTY3.toString();
 
-		assert.equal(toString, 'baz');
+		assert.equal(toString, '      baz');
 		assert.equal(toString2, toString3);
 	});
 

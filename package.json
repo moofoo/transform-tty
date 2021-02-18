@@ -36,11 +36,11 @@
   "license": "MIT",
   "dependencies": {
     "ansi-escapes": "^4.3.1",
+    "node-ansiparser": "^2.2.0",
+    "node-ansiterminal": "^0.2.1-beta",
     "strip-ansi": "^6.0.0",
     "terminal.js": "github:moofoo/terminal.js",
-    "wcwidth": "^1.0.1",
-    "node-ansiparser": "^2.2.0",
-    "node-ansiterminal": "^0.2.1-beta"
+    "wcwidth": "^1.0.1"
   },
   "devDependencies": {
     "cli-cursor": "^3.1.0",

@@ -8,7 +8,7 @@ class TerminalJSParser {
 			...options,
 		};
 
-		options.crlf = options.crlf === undefined ? true : options.crlf;
+		options.crlf = options.crlf === undefined ? false : options.crlf;
 
 		this.options = options;
 
@@ -48,7 +48,10 @@ class TerminalJSParser {
 	}
 
 	cursorGetPosition() {
-		return [this.terminal.state.cursor.x, this.terminal.state.cursor.y];
+		return {
+			x: this.terminal.state.cursor.x,
+			y: this.terminal.state.cursor.y,
+		};
 	}
 
 	new() {

@@ -25,6 +25,8 @@ class TransformTTY extends Transform {
 
 		this._crlf = options.crlf !== undefined ? options.crlf : false;
 
+		this._terminal = this._getTerminal(this._defaultParser);
+
 		this.isTTY = true;
 
 		this._sequencers = [];
@@ -41,6 +43,8 @@ class TransformTTY extends Transform {
 	set rows(rows) {
 		this._rows = rows;
 
+		this._terminal.resize(rows, this.columns);
+
 		if (this._sequencers) {
 			this._sequencers.forEach((sequencer) => {
 				sequencer.parser.resize(rows, this.columns);
@@ -55,11 +59,31 @@ class TransformTTY extends Transform {
 	set columns(columns) {
 		this._columns = columns;
 
+		this._terminal.resize(this.rows, columns);
+
 		if (this._sequencers) {
 			this._sequencers.forEach((sequencer) => {
-				sequencer.parser.resize(this._rows, columns);
+				sequencer.parser.resize(this.rows, columns);
 			});
 		}
+	}
+
+	_getTerminal(parserClass = null, parserOptions = {}) {
+		const options = {
+			rows: this.rows,
+			columns: this.columns,
+			...parserOptions,
+		};
+
+		parserClass = parserClass || this._defaultParser;
+
+		if (parserClass === AnsiTerminalParser) {
+			options.newline_mode = this._crlf;
+		} else {
+			options.crlf = this._crlf;
+		}
+
+		return new parserClass(options);
 	}
 
 	addSequencer(add, clear = false) {
@@ -83,19 +107,7 @@ class TransformTTY extends Transform {
 			};
 		}
 
-		const options = {
-			rows: this.rows,
-			columns: this.columns,
-			...parserOptions,
-		};
-
-		if (this._defaultParser === AnsiTerminalParser) {
-			options.newline_mode = this._crlf;
-		} else {
-			options.crlf = this._crlf;
-		}
-
-		const parser = new parserClass(options);
+		const parser = this._getTerminal(parserClass, parserOptions);
 
 		this._sequencers.push({
 			parser,
@@ -111,6 +123,8 @@ class TransformTTY extends Transform {
 
 	_transform(chunk, encoding, callback) {
 		const string = chunk.toString();
+
+		this._terminal.write(string);
 
 		if (TransformTTY.onlyAnsi(string)) {
 			this._hasTerminatingAnsiCodes = true;
@@ -154,6 +168,10 @@ class TransformTTY extends Transform {
 
 		this.push(chunk);
 		callback();
+	}
+
+	getCursorPos() {
+		return this._terminal.cursorGetPosition();
 	}
 
 	_appendCodes() {
