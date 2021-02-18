@@ -141,29 +141,16 @@ class TransformTTY extends Transform {
 		callback();
 	}
 
-	_appendCodes(sequencerIndex = null) {
-		const append = (sequencer) => {
-			if (!sequencer.codesAppended) {
-				const output = sequencer.parser.toString();
-				sequencer.sequences.push([...sequencer.lastSequence]);
-				sequencer.frames.push(output);
-				sequencer.codesAppended = true;
-			}
-		};
-
+	_appendCodes() {
 		if (this._hasTerminatingAnsiCodes && this._sequencers.length) {
-			if (sequencerIndex !== null) {
-				append(this._sequencers[sequencerIndex]);
-			} else {
-				this._sequencers.forEach(append);
-			}
-		}
-	}
-
-	_getFrames(sequencerIndex) {
-		if (this._sequencers.length) {
-			this._appendCodes(sequencerIndex);
-			return this._sequencers[sequencerIndex].frames;
+			this._sequencers.forEach((sequencer) => {
+				if (!sequencer.codesAppended) {
+					const output = sequencer.parser.toString();
+					sequencer.sequences.push([...sequencer.lastSequence]);
+					sequencer.frames.push(output);
+					sequencer.codesAppended = true;
+				}
+			});
 		}
 	}
 
