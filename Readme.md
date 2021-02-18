@@ -99,6 +99,23 @@ transformTTY.write('baz');
 transformTTY.getFrames() // [ 'foo', 'foo   bar', 'foo   bar   baz' ]
 ```
 
+### getSequenceStrings()
+```js
+const transformTTY = new TransformTTY();
+transformTTY.addSequencer(); // sequencer1
+transformTTY.addSequencer(null, true); //sequencer2
+
+transformTTY.write('foo');
+transformTTY.clearLine(1);
+transformTTY.write('bar');
+
+const [sequencer1String, sequencer2String] = transformTTY.getSequenceStrings();
+/*
+  sequencer1String = "foobar"
+  sequencer2String = "   bar"
+*/
+```
+
 ## Sequences
 
 ### TLDR version:

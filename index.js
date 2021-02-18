@@ -141,21 +141,34 @@ class TransformTTY extends Transform {
 		callback();
 	}
 
-	_appendCodes() {
-		if (this._hasTerminatingAnsiCodes) {
-			this._sequencers.forEach((sequencer) => {
-				if (!sequencer.codesAppended) {
-					const output = sequencer.parser.toString();
-					sequencer.sequences.push([...sequencer.lastSequence]);
-					sequencer.frames.push(output);
-					sequencer.codesAppended = true;
-				}
-			});
+	_appendCodes(sequencerIndex = null) {
+		const append = (sequencer) => {
+			if (!sequencer.codesAppended) {
+				const output = sequencer.parser.toString();
+				sequencer.sequences.push([...sequencer.lastSequence]);
+				sequencer.frames.push(output);
+				sequencer.codesAppended = true;
+			}
+		};
+
+		if (this._hasTerminatingAnsiCodes && this._sequencers.length) {
+			if (sequencerIndex !== null) {
+				append(this._sequencers[sequencerIndex]);
+			} else {
+				this._sequencers.forEach(append);
+			}
+		}
+	}
+
+	_getFrames(sequencerIndex) {
+		if (this._sequencers.length) {
+			this._appendCodes(sequencerIndex);
+			return this._sequencers[sequencerIndex].frames;
 		}
 	}
 
 	getFrames() {
-		if (this._sequencers) {
+		if (this._sequencers.length) {
 			this._appendCodes();
 			if (this._sequencers.length === 1) {
 				return this._sequencers[0].frames;
@@ -170,7 +183,7 @@ class TransformTTY extends Transform {
 	}
 
 	getSequences() {
-		if (this._sequencers) {
+		if (this._sequencers.length) {
 			this._appendCodes();
 			if (this._sequencers.length === 1) {
 				return this._sequencers[0].sequences;
@@ -190,18 +203,35 @@ class TransformTTY extends Transform {
 		return [...this._chunks];
 	}
 
+	getSequenceStrings() {
+		if (this._sequencers.length) {
+			const frames = this.getFrames();
+			return frames.length === 1
+				? frames[0]
+				: frames.map(
+						(sequencerFrames) =>
+							sequencerFrames[sequencerFrames.length - 1]
+				  );
+		} else {
+			throw new Error('getStrings called but no sequencers were defined');
+		}
+	}
+
 	toString() {
 		if (this._chunks.length === 0) {
 			return '';
 		}
 
-		const parser =
-			this._sequencers.length === 0
-				? new TerminalJSParser({
-						rows: this.rows,
-						columns: this.columns,
-				  })
-				: this._sequencers[0].parser.new();
+		let parser;
+
+		if (this._sequencers.length === 0) {
+			parser = new TerminalJSParser({
+				rows: this.rows,
+				columns: this.columns,
+			});
+		} else {
+			parser = this._sequencers[0].parser.new();
+		}
 
 		this._chunks.forEach((chunk) => {
 			parser.write(chunk);

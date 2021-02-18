@@ -6,7 +6,7 @@ const WormSpinner = require('./spinner');
 const runTests = (transformTTY, output, log) => {
 	const [frames, clearedFrames] = transformTTY.getFrames();
 	const [sequences, clearedSequences] = transformTTY.getSequences();
-	const toString = transformTTY.toString();
+	const [string, clearedString] = transformTTY.getSequenceStrings();
 
 	if (log) {
 		console.log('FRAMES', frames);
@@ -16,8 +16,9 @@ const runTests = (transformTTY, output, log) => {
 		console.log('\nCLEARED SEQUENCES', clearedSequences);
 	}
 
-	assert.equal(toString, output);
-	assert.equal(frames[frames.length - 1], toString);
+	assert.equal(string, output);
+	assert.strictEqual(string, clearedString);
+	assert.equal(frames[frames.length - 1], string);
 	assert.deepEqual(frames, clearedFrames);
 };
 
@@ -294,10 +295,11 @@ suite('Spinner with bad clear method', () => {
                 >      ~ bar
         */
 
+		const [string, clearedString] = transformTTY.getSequenceStrings();
 		const [frames, clearedFrames] = transformTTY.getFrames();
 
-		assert.equal(frames[frames.length - 1], '- foo~ bar');
-		assert.equal(clearedFrames[clearedFrames.length - 1], '     ~ bar');
+		assert.equal(string, '- foo~ bar');
+		assert.equal(clearedString, '     ~ bar');
 
 		assert.notDeepEqual(frames, clearedFrames);
 	});
@@ -356,13 +358,14 @@ suite('Spinner with bad clear method', () => {
                 >
         */
 
+		const [string, clearedString] = transformTTY.getSequenceStrings();
 		const [frames, clearedFrames] = transformTTY.getFrames();
 
 		assert.equal(
-			frames[frames.length - 1],
+			string,
 			'- foo~  foo \n000000000000000\n00000\n bar \n- foo\nbar\n '
 		);
-		assert.equal(clearedFrames[clearedFrames.length - 1], '- foo\nbar\n ');
+		assert.equal(clearedString, '- foo\nbar\n ');
 
 		assert.notDeepEqual(frames, clearedFrames);
 	});
@@ -410,16 +413,14 @@ suite('Spinner with bad clear method', () => {
                 > 0000000
         */
 
+		const [string, clearedString] = transformTTY.getSequenceStrings();
 		const [frames, clearedFrames] = transformTTY.getFrames();
 
 		assert.equal(
-			frames[frames.length - 1],
+			string,
 			'- foo~ 11111111\n111111111111111\n11        - 000\n0000000'
 		);
-		assert.equal(
-			clearedFrames[clearedFrames.length - 1],
-			'          - 000\n0000000'
-		);
+		assert.equal(clearedString, '          - 000\n0000000');
 
 		assert.notDeepEqual(frames, clearedFrames);
 	});
