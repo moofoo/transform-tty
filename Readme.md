@@ -235,6 +235,6 @@ const [frames, clearedFrames] = transformTTY.getFrames();
 
 `frames` has changed to reflect the `clearLine(1)` call, but `clearedFrames` is the same as when `clearLine(0)` was used. Again, this is because the sequences you get with `transformTTY.addSequencer(null, true)` represent the ideal case for all clearing control codes, assuming the intent is to completely clear the output.
 
-Actual rendering / clearing algorithms are more complex than this, of course. I've made an example Spinner app with tests to show how TransformTTY could be used in a more realistic situation:[spinner.text.js](https://github.com/moofoo/transform-tty/blob/main/tests/spinner.test.js)
+Actual rendering / clearing algorithms are more complex than this, of course. I've made an [example CLI Spinner](https://github.com/moofoo/transform-tty/blob/main/tests/spinner.js) with [tests](https://github.com/moofoo/transform-tty/blob/main/tests/spinner.test.js) to show how TransformTTY could be used in a more realistic situation to test and optimize a CLI animation program.
 
 
