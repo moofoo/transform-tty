@@ -80,7 +80,7 @@ class TransformTTY extends Transform {
 			...parserOptions,
 		};
 
-		const parser = new parserClass(parserOptions);
+		const parser = new parserClass(options);
 
 		this._sequencers.push({
 			parser,
