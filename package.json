@@ -1,0 +1,55 @@
+{
+  "name": "transform-tty",
+  "version": "1.0.0",
+  "description": "Drop-in replacement for stdout/stderr that converts output to strings for testing",
+  "repository": "https://github.com/moofoo/test-tty",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "mocha ./tests"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "parsers/terminaljs.js"
+  ],
+  "author": {
+    "name": "Nathan Cook",
+    "email": "nathancookdev@gmail.com"
+  },
+  "keywords": [
+    "ansi",
+    "terminal",
+    "console",
+    "cli",
+    "tty",
+    "shell",
+    "xterm",
+    "command-line",
+    "vt100",
+    "control",
+    "code",
+    "codes",
+    "cursor",
+    "testing"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "ansi-escapes": "^4.3.1",
+    "strip-ansi": "^6.0.0",
+    "terminal.js": "github:moofoo/terminal.js",
+    "wcwidth": "^1.0.1"
+  },
+  "devDependencies": {
+    "cli-cursor": "^3.1.0",
+    "mocha": "^8.3.0",
+    "node-ansiparser": "^2.2.0",
+    "node-ansiterminal": "^0.2.1-beta"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true
+  }
+}
