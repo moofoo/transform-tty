@@ -15,11 +15,15 @@ class TransformTTY extends Transform {
 		super(options);
 
 		this._rows = options.rows || 25;
+
 		this._columns = options.columns || 80;
+
 		this._defaultParser =
 			options.defaultParser === 'ansiTerminal'
 				? AnsiTerminalParser
 				: TerminalJSParser;
+
+		this._crlf = options.crlf !== undefined ? options.crlf : false;
 
 		this.isTTY = true;
 
@@ -84,6 +88,12 @@ class TransformTTY extends Transform {
 			columns: this.columns,
 			...parserOptions,
 		};
+
+		if (this._defaultParser === AnsiTerminalParser) {
+			options.newline_mode = this._crlf;
+		} else {
+			options.crlf = this._crlf;
+		}
 
 		const parser = new parserClass(options);
 

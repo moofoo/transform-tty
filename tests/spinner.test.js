@@ -206,7 +206,7 @@ suite('Spinner render testing', () => {
 	let transformTTY;
 
 	setup(() => {
-		transformTTY = new TransformTTY();
+		transformTTY = new TransformTTY({ crlf: true });
 		transformTTY.addSequencer();
 		transformTTY.addSequencer(null, true);
 
@@ -265,7 +265,7 @@ suite('Spinner with bad clear method', () => {
 	let transformTTY;
 
 	setup(() => {
-		transformTTY = new TransformTTY();
+		transformTTY = new TransformTTY({ crlf: true });
 		transformTTY.addSequencer();
 		transformTTY.addSequencer(null, true);
 

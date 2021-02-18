@@ -1,15 +1,17 @@
 import TTY from 'tty';
 
 declare interface Sequencer {
-    currentSequence: string[];
-    lastSequence: string[];
-    sequences: string[][];
+	currentSequence: string[];
+	lastSequence: string[];
+	sequences: string[][];
 }
 
 declare interface TransformTTYOptions {
-    rows?: number;
-    columns?: number;
-    [key: any]: number | string | boolean;
+	rows?: number;
+	columns?: number;
+	defaultParser?: 'terminalJS' | 'ansiTerminal';
+	crlf?: false;
+	[key: any]: number | string | boolean;
 }
 
 declare class TransformTTY extends TTY.WriteStream {
@@ -28,7 +30,7 @@ declare class TransformTTY extends TTY.WriteStream {
 
 	toString(): string;
 
-    static onlyAnsi(string:string):boolean;
+	static onlyAnsi(string: string): boolean;
 }
 
 export = TransformTTY;

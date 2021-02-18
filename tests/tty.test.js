@@ -83,11 +83,11 @@ suite('transformTTY', () => {
 	};
 
 	beforeEach(() => {
-		transformTTY = new TransformTTY();
+		transformTTY = new TransformTTY({ crlf: true });
 		transformTTY.addSequencer();
 
 		transformTTY2 = new TransformTTY();
-		transformTTY2._addSequencer(TerminalJSParser, { crlf: false });
+		transformTTY2.addSequencer();
 
 		transformTTY3 = new TransformTTY();
 		transformTTY3._addSequencer(AnsiTerminalParser);

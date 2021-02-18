@@ -9,10 +9,11 @@ $ npm install transform-tty
 ```
 
 ### Usage
+
 ```js
 const TransformTTY = require('transform-tty');
 
-const transformTTY = new TransformTTY({rows:20, columns:40});
+const transformTTY = new TransformTTY({ rows: 20, columns: 40 });
 
 transformTTY.addSequencer();
 transformTTY.write('foo');
@@ -29,15 +30,17 @@ const frames = transformTTY.getFrames();
 // sequences = [ [ 'foo' ], [ 'foo', '\x1B[6G', 'bar' ] ]
 // frames = [ 'foo', 'foo  bar' ]
 ```
+
 ## API
 
-### new TransformTTY({rows?, columns?, defaulParser?})
+### new TransformTTY({rows?, columns?, defaulParser?, crlf?})
 
 default option values are
 
-- rows = 25
-- columns = 80
-- defaultParser = "terminalJs"
+-   rows = 25
+-   columns = 80
+-   defaultParser = "terminalJs"
+-   crlf = false (true to turn on 'carriage return line feed' mode)
 
 You can also specify "ansiTerminal" for defaultParser, which will cause TransformTTY to use the [AnsiTerminal](https://github.com/netzkolchose/node-ansiterminal)
 instead.
@@ -47,12 +50,11 @@ these codes (see [these tests](https://github.com/moofoo/transform-tty/blob/main
 
 One exception is that AnsiTerminal does not support Tab stop related codes.
 
-
 ### addSequencer(add, clear)
 
 A 'sequencer' breaks up writes to the stream into sequences based on the `add` and `clear` functions.
 
-Both  `add` and `clear` have useful defaults that will very likely meet your needs, if you want to test console output that clears lines/the screen and moves the cursor. See the 'Sequences' section
+Both `add` and `clear` have useful defaults that will very likely meet your needs, if you want to test console output that clears lines/the screen and moves the cursor. See the 'Sequences' section
 
 ### toString()
 
@@ -65,10 +67,11 @@ transformTTY.write('bar');
 transformTTY.moveCursor(0, 3);
 transformTTY.write('baz');
 
-transformTTY.toString() // 'foo   bar   baz'
+transformTTY.toString(); // 'foo   bar   baz'
 ```
 
 ### getWrites()
+
 ```js
 const transformTTY = new TransformTTY();
 
@@ -78,10 +81,11 @@ transformTTY.write('bar');
 transformTTY.moveCursor(0, 3);
 transformTTY.write('baz');
 
-transformTTY.getWrites() // [ 'foo', '\x1B[3C', 'bar', '\x1B[3C', 'baz' ]
+transformTTY.getWrites(); // [ 'foo', '\x1B[3C', 'bar', '\x1B[3C', 'baz' ]
 ```
 
 ### getSequences()
+
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
@@ -92,7 +96,7 @@ transformTTY.write('bar');
 transformTTY.moveCursor(0, 3);
 transformTTY.write('baz');
 
-transformTTY.getSequences()
+transformTTY.getSequences();
 /*
 [
   [ 'foo' ],
@@ -103,6 +107,7 @@ transformTTY.getSequences()
 ```
 
 ### getFrames()
+
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
@@ -113,10 +118,11 @@ transformTTY.write('bar');
 transformTTY.moveCursor(0, 3);
 transformTTY.write('baz');
 
-transformTTY.getFrames() // [ 'foo', 'foo   bar', 'foo   bar   baz' ]
+transformTTY.getFrames(); // [ 'foo', 'foo   bar', 'foo   bar   baz' ]
 ```
 
 ### getSequenceStrings()
+
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer(); // sequencer1
@@ -161,7 +167,6 @@ We can approximate frames by breaking up these outputs into sequences by some lo
 Calling addSequencer with no arguments creates sequences on text output (that is, when output isn't exclusively control codes). It does NOT clear
 between sequences (the default of `clear` is `false`), so sequences are additive by default.
 
-
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
@@ -197,7 +202,7 @@ Passing `true` for `clear` clears between sequences when the current sequence co
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
-transformTTY.addSequencer(null, true) //  (passing `null` for `add` uses the default behavior)
+transformTTY.addSequencer(null, true); //  (passing `null` for `add` uses the default behavior)
 
 /*
 transformTTY.addSequencer(null, true)  same as:
@@ -246,7 +251,7 @@ Now watch what happens if we change the call to clearLine so its ineffective:
 ```js
 const transformTTY = new TransformTTY();
 transformTTY.addSequencer();
-transformTTY.addSequencer(null, true)
+transformTTY.addSequencer(null, true);
 
 transformTTY.write('foo');
 
@@ -264,11 +269,8 @@ const [frames, clearedFrames] = transformTTY.getFrames();
 
 // frames =         [ 'foo', 'foo  bar', 'baz  bar' ]
 // clearedFrames =  [ 'foo', 'foo  bar', 'baz' ]
-
 ```
 
 `frames` has changed to reflect the `clearLine(1)` call, but `clearedFrames` is the same as when `clearLine(0)` was used. Again, this is because the sequences you get with `transformTTY.addSequencer(null, true)` represent the ideal case for all clearing control codes, assuming the intent is to completely clear the output.
 
 Actual rendering / clearing algorithms are more complex than this, of course. Along with the other tests, I've included an [example CLI Spinner](https://github.com/moofoo/transform-tty/blob/main/tests/spinner.js) with [tests](https://github.com/moofoo/transform-tty/blob/main/tests/spinner.test.js) to show how TransformTTY could be used in a more realistic situation to test and optimize a CLI animation program.
-
-
