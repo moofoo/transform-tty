@@ -25,7 +25,7 @@ class TransformTTY extends Transform {
 
 		this._crlf = options.crlf !== undefined ? options.crlf : false;
 
-		this._terminal = this._getTerminal(this._defaultParser);
+		this._parser = this._getParser(this._defaultParser);
 
 		this.isTTY = true;
 
@@ -43,7 +43,7 @@ class TransformTTY extends Transform {
 	set rows(rows) {
 		this._rows = rows;
 
-		this._terminal.resize(rows, this.columns);
+		this._parser.resize(rows, this.columns);
 
 		if (this._sequencers) {
 			this._sequencers.forEach((sequencer) => {
@@ -59,7 +59,7 @@ class TransformTTY extends Transform {
 	set columns(columns) {
 		this._columns = columns;
 
-		this._terminal.resize(this.rows, columns);
+		this._parser.resize(this.rows, columns);
 
 		if (this._sequencers) {
 			this._sequencers.forEach((sequencer) => {
@@ -68,7 +68,7 @@ class TransformTTY extends Transform {
 		}
 	}
 
-	_getTerminal(parserClass = null, parserOptions = {}) {
+	_getParser(parserClass = null, parserOptions = {}) {
 		const options = {
 			rows: this.rows,
 			columns: this.columns,
@@ -107,7 +107,7 @@ class TransformTTY extends Transform {
 			};
 		}
 
-		const parser = this._getTerminal(parserClass, parserOptions);
+		const parser = this._getParser(parserClass, parserOptions);
 
 		this._sequencers.push({
 			parser,
@@ -124,7 +124,7 @@ class TransformTTY extends Transform {
 	_transform(chunk, encoding, callback) {
 		const string = chunk.toString();
 
-		this._terminal.write(string);
+		this._parser.write(string);
 
 		if (TransformTTY.onlyAnsi(string)) {
 			this._hasTerminatingAnsiCodes = true;
@@ -136,10 +136,7 @@ class TransformTTY extends Transform {
 			let trailingWhitespace = '';
 
 			if (!TransformTTY.onlyAnsi(string)) {
-				trailingWhitespace = string.match(/\s+$/g) || '';
-				if (/^\s+$/.test(trailingWhitespace)) {
-					trailingWhitespace = '';
-				}
+				trailingWhitespace = string.match(/\n+$/) || '';
 			}
 
 			this._sequencers.forEach((sequencer) => {
@@ -149,10 +146,7 @@ class TransformTTY extends Transform {
 
 				if (sequencer.add(string, sequencer)) {
 					sequencer.sequences.push([...sequencer.currentSequence]);
-
-					if (!/^\s$/.test(string)) {
-						sequencer.frames.push(output);
-					}
+					sequencer.frames.push(output);
 				}
 
 				sequencer.lastSequence = sequencer.currentSequence;
@@ -171,7 +165,7 @@ class TransformTTY extends Transform {
 	}
 
 	getCursorPos() {
-		return this._terminal.cursorGetPosition();
+		return this._parser.cursorGetPosition();
 	}
 
 	_appendCodes() {
@@ -245,10 +239,7 @@ class TransformTTY extends Transform {
 		let parser;
 
 		if (this._sequencers.length === 0) {
-			parser = new this._defaultParser({
-				rows: this.rows,
-				columns: this.columns,
-			});
+			parser = this._getParser(this._defaultParser);
 		} else {
 			parser = this._sequencers[0].parser.new();
 		}

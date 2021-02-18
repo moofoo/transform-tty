@@ -147,8 +147,8 @@ suite('transformTTY', () => {
 
 	test('setting row option', () => {
 		transformTTY = new TransformTTY({ rows: 1 });
-		testtTY2 = new TransformTTY({ rows: 1 });
-		testtTY3 = new TransformTTY({ rows: 1 });
+		transformTTY2 = new TransformTTY({ rows: 1 });
+		transformTTY3 = new TransformTTY({ rows: 1 });
 
 		transformTTYWrite('foo\nbar\nbaz');
 
@@ -162,8 +162,8 @@ suite('transformTTY', () => {
 
 	test('setting column option', () => {
 		transformTTY = new TransformTTY({ columns: 3 });
-		testtTY2 = new TransformTTY({ columns: 3 });
-		testtTY3 = new TransformTTY({ columns: 3 });
+		transformTTY2 = new TransformTTY({ columns: 3 });
+		transformTTY3 = new TransformTTY({ columns: 3 });
 
 		transformTTYWrite('foobarbaz');
 
@@ -178,6 +178,12 @@ suite('transformTTY', () => {
 	test('resizing', () => {
 		transformTTY.columns = 3;
 		transformTTY.rows = 2;
+
+		transformTTY2.columns = 3;
+		transformTTY2.rows = 2;
+
+		transformTTY3.columns = 3;
+		transformTTY3.rows = 2;
 
 		transformTTYWrite('foobarbaz');
 
@@ -265,11 +271,7 @@ suite('transformTTY', () => {
 	});
 
 	test('moveCursor', () => {
-		transformTTYWrite('foo');
-		transformTTYWrite('\n');
-		transformTTYWrite('bar');
-		transformTTYWrite('\n');
-		transformTTYWrite('baz');
+		transformTTYWrite('foo\nbar\nbaz');
 		transformTTYMoveCursor(-3, -1);
 		transformTTYWrite('boz');
 
@@ -283,29 +285,9 @@ suite('transformTTY', () => {
 		const frames3 = transformTTY3.getFrames();
 
 		assert.deepEqual(toString, 'foo\nboz\nbaz');
-		assert.deepEqual(writes, [
-			'foo',
-			'\n',
-			'bar',
-			'\n',
-			'baz',
-			'\x1B[3D\x1B[1A',
-			'boz',
-		]);
-		assert.deepEqual(sequences, [
-			['foo'],
-			['foo', '\n'],
-			['foo', '\n', 'bar'],
-			['foo', '\n', 'bar', '\n'],
-			['foo', '\n', 'bar', '\n', 'baz'],
-			['foo', '\n', 'bar', '\n', 'baz', '\x1B[3D\x1B[1A', 'boz'],
-		]);
-		assert.deepEqual(frames, [
-			'foo',
-			'foo\nbar',
-			'foo\nbar\nbaz',
-			'foo\nboz\nbaz',
-		]);
+		assert.deepEqual(writes,[ 'foo\nbar\nbaz', '\x1B[3D\x1B[1A', 'boz' ]);
+		assert.deepEqual(sequences, [ [ 'foo\nbar\nbaz' ], [ 'foo\nbar\nbaz', '\x1B[3D\x1B[1A', 'boz' ] ]);
+		assert.deepEqual(frames, [ 'foo\nbar\nbaz', 'foo\nboz\nbaz' ]);
 		assert.equal(toString, frames[frames.length - 1]);
 		assert.deepEqual(writes, sequences[sequences.length - 1]);
 		assert.equal(toString2, toString3);

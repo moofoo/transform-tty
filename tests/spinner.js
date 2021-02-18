@@ -68,11 +68,6 @@ class WormSpinner {
 	}
 
 	updateLineCount() {
-		/*
-            Essentially the same as Ora's, except spinner.prefixText isn't involved, to keep things simple,
-            and the value of spinner.indent is used to calculate lineCount. This was needed to correct failing
-            tests where the wcwidth of spinner.indent + spinner.text is greater than spinner.stream.columns.
-        */
 		const columns = this.stream.columns || 80;
 
 		this.lineCount = 0;

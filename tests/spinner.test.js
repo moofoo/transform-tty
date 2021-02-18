@@ -358,6 +358,7 @@ suite('Spinner with bad clear method', () => {
                 >
         */
 
+
 		const [string, clearedString] = transformTTY.getSequenceStrings();
 		const [frames, clearedFrames] = transformTTY.getFrames();
 
