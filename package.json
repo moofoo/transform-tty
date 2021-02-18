@@ -11,7 +11,7 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "parsers/terminaljs.js"
+    "parsers"
   ],
   "author": {
     "name": "Nathan Cook",

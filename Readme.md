@@ -31,6 +31,23 @@ const frames = transformTTY.getFrames();
 ```
 ## API
 
+### new TransformTTY({rows?, columns?, defaulParser?})
+
+default option values are
+
+- rows = 25
+- columns = 80
+- defaultParser = "terminalJs"
+
+You can also specify "ansiTerminal" for defaultParser, which will cause TransformTTY to use the [AnsiTerminal](https://github.com/netzkolchose/node-ansiterminal)
+instead.
+
+At this stage, TransformTTY is focused on supporting ANSI control codes that erase output and that move the cursor, and both terminals have solid support for
+these codes (see [these tests](https://github.com/moofoo/transform-tty/blob/main/tests/tty.test.js).
+
+One exception is that AnsiTerminal does not support Tab stop related codes.
+
+
 ### addSequencer(add, clear)
 
 A 'sequencer' breaks up writes to the stream into sequences based on the `add` and `clear` functions.

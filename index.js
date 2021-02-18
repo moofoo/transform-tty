@@ -1,5 +1,6 @@
 const { Transform } = require('stream');
 const TerminalJSParser = require('./parsers/terminaljs');
+const AnsiTerminalParser = require('./parsers/ansiTerminal');
 const ansiEscapes = require('ansi-escapes');
 const stripAnsi = require('strip-ansi');
 
@@ -13,8 +14,9 @@ class TransformTTY extends Transform {
 	constructor(options = {}) {
 		super(options);
 
-		this._rows = options.rows || 10;
+		this._rows = options.rows || 25;
 		this._columns = options.columns || 80;
+		this._defaultParser = options.defaultParser === 'ansiTerminal' ? AnsiTerminalParser : TerminalJSParser;
 
 		this.isTTY = true;
 
@@ -54,7 +56,7 @@ class TransformTTY extends Transform {
 	}
 
 	addSequencer(add, clear = false) {
-		this._addSequencer(TerminalJSParser, {}, add, clear);
+		this._addSequencer(this._defaultParser, {}, add, clear);
 	}
 
 	_addSequencer(parserClass, parserOptions = {}, add, clear) {
@@ -186,10 +188,6 @@ class TransformTTY extends Transform {
 		}
 	}
 
-	getWrites() {
-		return [...this._chunks];
-	}
-
 	getSequenceStrings() {
 		if (this._sequencers.length) {
 			const frames = this.getFrames();
@@ -204,6 +202,10 @@ class TransformTTY extends Transform {
 		}
 	}
 
+	getWrites() {
+		return [...this._chunks];
+	}
+
 	toString() {
 		if (this._chunks.length === 0) {
 			return '';
@@ -212,7 +214,7 @@ class TransformTTY extends Transform {
 		let parser;
 
 		if (this._sequencers.length === 0) {
-			parser = new TerminalJSParser({
+			parser = new this._defaultParser({
 				rows: this.rows,
 				columns: this.columns,
 			});
