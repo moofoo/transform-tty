@@ -120,7 +120,7 @@ assert.deepEqual(frames1, frames2);
 ### Long version:
 
 When talking about CLI animation, you don't really have 'frames', technically speaking. What you see with a console 'spinner', for example,
-is just a repeated series of text output and control codes that manage cursor behavior to output the text, clear the line(s) of output, and reposition itself before repeating the series.
+is just a repeated series of text output and control codes that manage cursor behavior to output the text, clear the line(s) of output, and reposition the cursor before repeating the series.
 
 We can approximate frames by breaking up these outputs into sequences by some logic and then running the sequences individually through a terminal emulator to create strings.
 
