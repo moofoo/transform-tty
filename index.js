@@ -16,7 +16,10 @@ class TransformTTY extends Transform {
 
 		this._rows = options.rows || 25;
 		this._columns = options.columns || 80;
-		this._defaultParser = options.defaultParser === 'ansiTerminal' ? AnsiTerminalParser : TerminalJSParser;
+		this._defaultParser =
+			options.defaultParser === 'ansiTerminal'
+				? AnsiTerminalParser
+				: TerminalJSParser;
 
 		this.isTTY = true;
 

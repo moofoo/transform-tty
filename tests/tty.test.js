@@ -93,8 +93,8 @@ suite('transformTTY', () => {
 		transformTTY3._addSequencer(AnsiTerminalParser);
 	});
 
-	test("defaultParser", () => {
-		let testTTY = new TransformTTY({defaultParser:"ansiTerminal"});
+	test('defaultParser', () => {
+		let testTTY = new TransformTTY({ defaultParser: 'ansiTerminal' });
 
 		assert(testTTY._defaultParser === AnsiTerminalParser);
 
