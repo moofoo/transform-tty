@@ -44,8 +44,7 @@
   },
   "devDependencies": {
     "cli-cursor": "^3.1.0",
-    "mocha": "^8.3.0",
-
+    "mocha": "^8.3.0"
   },
   "prettier": {
     "singleQuote": true,
