@@ -98,7 +98,7 @@ class TransformTTY extends Transform {
 		}
 
 		if (clear === true) {
-			clear = (string, sequencer) => {
+			clear = (str, sequencer) => {
 				return sequencer.currentSequence.find((string) => {
 					return RegExp('\\x1b\\[[0-2]?K|\\x1b\\[[0-2]?J').test(
 						string
@@ -144,25 +144,25 @@ class TransformTTY extends Transform {
 				sequencer.parser.write(string);
 				const output = sequencer.parser.toString(trailingWhitespace);
 
+				sequencer.lastSequence = [...sequencer.currentSequence];1
+
 				if (sequencer.add(string, sequencer)) {
 					sequencer.sequences.push([...sequencer.currentSequence]);
 					sequencer.frames.push(output);
-				}
 
-				sequencer.lastSequence = sequencer.currentSequence;
-
-				if (sequencer.clear && sequencer.clear(string, sequencer)) {
-					sequencer.currentSequence = [];
-					sequencer.parser.clear();
+					if (sequencer.clear && sequencer.clear(string, sequencer)) {
+						sequencer.currentSequence = [];
+						sequencer.parser.clear();
+					}
 				}
 			});
 		}
 
 		this._chunks.push(string);
-
 		this.push(chunk);
 		callback();
 	}
+
 
 	getCursorPos() {
 		return this._parser.cursorGetPosition();
@@ -216,8 +216,8 @@ class TransformTTY extends Transform {
 	getSequenceStrings() {
 		if (this._sequencers.length) {
 			const frames = this.getFrames();
-			return frames.length === 1
-				? frames[0]
+			return this._sequencers.length === 1
+				? frames[frames.length-1]
 				: frames.map(
 						(sequencerFrames) =>
 							sequencerFrames[sequencerFrames.length - 1]
