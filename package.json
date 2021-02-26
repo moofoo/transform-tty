@@ -2,7 +2,7 @@
   "name": "transform-tty",
   "version": "1.0.10",
   "description": "Drop-in replacement for stdout/stderr that converts output to strings for testing",
-  "repository": "https://github.com/moofoo/test-tty",
+  "repository": "https://github.com/moofoo/transform-tty",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
